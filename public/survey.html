@@ -2,57 +2,46 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Health Survey</title>
+<title>Health Survey Questions</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: Arial; text-align: center; background: linear-gradient(to bottom right, #fbc2eb, #a6c1ee); color: #333; }
-h2 { margin-top: 50px; }
-button { padding: 15px 30px; margin: 10px; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; background: #ff7f50; color: #fff; }
-button:hover { background: #ff6347; }
-section { margin-top: 50px; display: none; }
+body { font-family: 'Rubik', sans-serif; text-align: center; margin-top: 30px; background: linear-gradient(120deg, #89f7fe, #66a6ff); }
+form { width: 400px; margin: auto; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); animation: fadeIn 1s ease; }
+input, select, textarea { width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size:1em; }
+button { padding: 12px 25px; cursor: pointer; background: linear-gradient(90deg, #f12711, #f5af19); color:white; border: none; border-radius: 12px; font-weight:bold; transition: transform 0.3s; }
+button:hover { transform: scale(1.05); }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 </style>
 </head>
 <body>
+<h2>Health Survey Questions</h2>
+<form id="healthForm">
+  <label>How many meals do you eat per day?</label>
+  <select name="meals" required>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4+">4+</option>
+  </select>
 
-<h2>Health Survey 🩺</h2>
+  <label>Do you drink enough water daily?</label>
+  <select name="water" required>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
 
-<section id="q1">
-<p>How many times do you brush your teeth daily?</p>
-<button onclick="next('q1','q2')">0</button>
-<button onclick="next('q1','q2')">1</button>
-<button onclick="next('q1','q2')">2</button>
-<button onclick="next('q1','q2')">3+</button>
-</section>
+  <label>Any other healthy habits?</label>
+  <textarea name="habits" rows="3" placeholder="Write here..."></textarea>
 
-<section id="q2">
-<p>Do you exercise regularly?</p>
-<button onclick="next('q2','q3')">Yes 💪</button>
-<button onclick="next('q2','q3')">No ❌</button>
-</section>
-
-<section id="q3">
-<p>How many hours of sleep do you get on average?</p>
-<button onclick="finishSurvey()"><5</button>
-<button onclick="finishSurvey()">5-6</button>
-<button onclick="finishSurvey()">6-7</button>
-<button onclick="finishSurvey()">7+</button>
-</section>
-
-<p id="thanks" style="display:none; margin-top:50px; font-size:20px;">Thank you for completing the survey! 🎉</p>
+  <button type="submit">Submit Survey</button>
+</form>
 
 <script>
-function next(current, nextSec) {
-  document.getElementById(current).style.display = 'none';
-  document.getElementById(nextSec).style.display = 'block';
-}
-function finishSurvey() {
-  document.getElementById('q3').style.display = 'none';
-  document.getElementById('thanks').style.display = 'block';
-}
-window.onload = () => {
-  document.getElementById('q1').style.display = 'block';
-}
+document.getElementById("healthForm").addEventListener("submit", e => {
+  e.preventDefault();
+  alert("Survey submitted! Thank you 😊");
+});
 </script>
-
 </body>
 </html>
 

