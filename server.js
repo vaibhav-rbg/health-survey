@@ -36,7 +36,7 @@ app.post("/api/upload", upload.single("photo"), (req, res) => {
   // Send download URL back to browser
   res.json({
     status: "success",
-    downloadUrl: `/uploads/${req.file.filename}`
+    downloadUrl: `/uploads/${req.file.filename}` // auto-download link
   });
 });
 

