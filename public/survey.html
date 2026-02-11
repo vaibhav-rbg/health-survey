@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Health Survey</title>
+<style>
+body { font-family: Arial; text-align: center; background: linear-gradient(to bottom right, #fbc2eb, #a6c1ee); color: #333; }
+h2 { margin-top: 50px; }
+button { padding: 15px 30px; margin: 10px; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; background: #ff7f50; color: #fff; }
+button:hover { background: #ff6347; }
+section { margin-top: 50px; display: none; }
+</style>
+</head>
+<body>
+
+<h2>Health Survey 🩺</h2>
+
+<section id="q1">
+<p>How many times do you brush your teeth daily?</p>
+<button onclick="next('q1','q2')">0</button>
+<button onclick="next('q1','q2')">1</button>
+<button onclick="next('q1','q2')">2</button>
+<button onclick="next('q1','q2')">3+</button>
+</section>
+
+<section id="q2">
+<p>Do you exercise regularly?</p>
+<button onclick="next('q2','q3')">Yes 💪</button>
+<button onclick="next('q2','q3')">No ❌</button>
+</section>
+
+<section id="q3">
+<p>How many hours of sleep do you get on average?</p>
+<button onclick="finishSurvey()"><5</button>
+<button onclick="finishSurvey()">5-6</button>
+<button onclick="finishSurvey()">6-7</button>
+<button onclick="finishSurvey()">7+</button>
+</section>
+
+<p id="thanks" style="display:none; margin-top:50px; font-size:20px;">Thank you for completing the survey! 🎉</p>
+
+<script>
+function next(current, nextSec) {
+  document.getElementById(current).style.display = 'none';
+  document.getElementById(nextSec).style.display = 'block';
+}
+function finishSurvey() {
+  document.getElementById('q3').style.display = 'none';
+  document.getElementById('thanks').style.display = 'block';
+}
+window.onload = () => {
+  document.getElementById('q1').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
+
