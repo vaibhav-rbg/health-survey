@@ -1,0 +1,27 @@
+{
+  "name": "health-survey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaibhav-rbg/health-survey.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vaibhav-rbg/health-survey/issues"
+  },
+  "homepage": "https://github.com/vaibhav-rbg/health-survey#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "multer": "^2.0.2",
+    "nodemailer": "^8.0.1"
+  }
+}
